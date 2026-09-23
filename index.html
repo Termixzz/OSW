@@ -98,7 +98,7 @@ img{display:block}
           <div style="flex: 1; min-height: 0; position: relative; background: var(--linea);">
             <img src="{{ s.img }}" alt="{{ s.titulo }}" decoding="async" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: {{ s.pos }};">
           </div>
-          <div data-svc-shade="" style="position: absolute; inset: 0; background: #000; opacity: 0; pointer-events: none;"></div>
+          <div data-svc-shade="" style="position: absolute; inset: 0; background: #000; opacity: 0; pointer-events: none; will-change: opacity;"></div>
           <div style="padding: var(--espacio-4); display: flex; flex-direction: column; gap: var(--espacio-2);">
             <span style="font: var(--tipo-boton); font-size: 14px; color: var(--azul);">{{ s.num }}</span>
             <h3 style="font: var(--tipo-titulo-3); margin: 0;">{{ s.titulo }}</h3>
@@ -136,7 +136,7 @@ img{display:block}
       <h2 style="font: var(--tipo-titulo-2); margin: 0;">Cuatro pasos, sin vueltas</h2>
     </div>
     <div style="height: 4px; background: rgba(255,255,255,0.2); border-radius: var(--radio-pill); overflow: hidden;">
-      <div data-steps-bar="" style="height: 100%; width: 0%; background: var(--sobre-color);"></div>
+      <div data-steps-bar="" style="height: 100%; width: 100%; transform: scaleX(0); transform-origin: 0 50%; will-change: transform; background: var(--sobre-color);"></div>
     </div>
     <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column;">
       <sc-for list="{{ pasos }}" as="p" hint-placeholder-count="4">
@@ -230,21 +230,28 @@ class Component extends DCLogic {
   dragging = false;
 
   componentDidMount() {
-    this.onScroll = () => {
-      if (this.raf) return;
-      this.raf = requestAnimationFrame(() => { this.raf = null; this.update(); });
-    };
+    this.onScroll = () => this.tick();
+    this.onResize = () => { this.stickyTop = null; this.tick(); };
     document.addEventListener('scroll', this.onScroll, { passive: true, capture: true });
-    window.addEventListener('resize', this.onScroll);
+    window.addEventListener('resize', this.onResize);
     this.setupReveal();
-    this.update();
-    setTimeout(() => this.update(), 300);
+    this.update(true);
+    setTimeout(() => this.update(true), 300);
   }
-  componentDidUpdate() { this.update(); }
+  componentDidUpdate() { this.tick(); }
   componentWillUnmount() {
     document.removeEventListener('scroll', this.onScroll, { capture: true });
-    window.removeEventListener('resize', this.onScroll);
+    window.removeEventListener('resize', this.onResize);
+    if (this.raf) cancelAnimationFrame(this.raf);
+    if (this.baRaf) cancelAnimationFrame(this.baRaf);
     if (this.io) this.io.disconnect();
+  }
+
+  // Un bucle de animación que sigue corriendo mientras el progreso suavizado
+  // no haya alcanzado al del scroll.
+  tick() {
+    if (this.raf) return;
+    this.raf = requestAnimationFrame(t => { this.raf = null; this.update(false, t); });
   }
 
   setupReveal() {
@@ -267,26 +274,51 @@ class Component extends DCLogic {
     els.forEach(el => this.io.observe(el));
   }
 
-  update() {
+  update(snap, now) {
     const root = this.rootRef.current;
     if (!root) return;
-    const vh = window.innerHeight;
     const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
     const ease = x => 1 - Math.pow(1 - x, 3);
-    // Progreso del tramo en que el bloque sticky está fijo. Se mide con su altura real
-    // (no con innerHeight) para que no salte cuando la barra del navegador móvil aparece/desaparece.
+    const svc = root.querySelector('[data-stack="svc"]');
+    const chk = root.querySelector('[data-stack="chk"]');
+    const st = root.querySelector('[data-stack="steps"]');
+
+    // 1) Lecturas: todas antes de escribir estilos, para no forzar un recálculo de layout por sección.
+    // Progreso del tramo en que el bloque sticky está fijo, medido con su altura real (no con
+    // innerHeight) para que no salte cuando la barra del navegador móvil aparece/desaparece.
+    if (this.stickyTop == null && svc) this.stickyTop = parseFloat(getComputedStyle(svc.firstElementChild).top) || 0;
+    const top = this.stickyTop || 0;
     const prog = el => {
-      const sticky = el.firstElementChild;
-      const top = sticky ? parseFloat(getComputedStyle(sticky).top) || 0 : 0;
+      if (!el) return 0;
       const r = el.getBoundingClientRect();
-      const t = r.height - (sticky ? sticky.offsetHeight : vh) - top;
+      const t = r.height - el.firstElementChild.offsetHeight - top;
       return t > 0 ? clamp((top - r.top) / t) : 0;
     };
+    const target = { svc: prog(svc), chk: prog(chk), st: prog(st) };
 
-    const svc = root.querySelector('[data-stack="svc"]');
+    // 2) Suavizado: el progreso mostrado persigue al del scroll con una constante de tiempo fija
+    // (igual a 60 o 120 Hz). En móvil el scroll llega a saltos; así el movimiento se ve continuo.
+    const cur = this.cur;
+    if (snap || !cur) {
+      this.cur = { ...target };
+    } else {
+      const dt = this.lastT ? Math.min(now - this.lastT, 100) : 16.7;
+      const a = 1 - Math.exp(-dt / 70);
+      let moving = false;
+      for (const k in target) {
+        const d = target[k] - cur[k];
+        if (Math.abs(d) < 0.0004) cur[k] = target[k];
+        else { cur[k] += d * a; moving = true; }
+      }
+      if (moving) this.tick();
+    }
+    this.lastT = this.raf ? now : 0; // si el bucle se detuvo, el próximo arranca con un frame estándar
+    const p = this.cur;
+
+    // 3) Escrituras
     if (svc) {
       const cards = svc.querySelectorAll('[data-svc-card]');
-      const N = cards.length, s = prog(svc) * (N - 1);
+      const N = cards.length, s = p.svc * (N - 1);
       cards.forEach((c, i) => {
         const enter = i === 0 ? 1 : ease(clamp(s - (i - 1)));
         const covered = clamp(s - i);
@@ -299,10 +331,9 @@ class Component extends DCLogic {
       if (cnt) cnt.textContent = `0${Math.min(N, Math.round(s) + 1)} / 0${N}`;
     }
 
-    const chk = root.querySelector('[data-stack="chk"]');
     if (chk) {
       const items = chk.querySelectorAll('[data-chk]');
-      const N = items.length, s = prog(chk) * (N + 0.3);
+      const N = items.length, s = p.chk * (N + 0.3);
       items.forEach((el, i) => {
         const e = ease(clamp((s - i) * 1.6));
         el.style.opacity = String(clamp(e * 1.4));
@@ -312,10 +343,9 @@ class Component extends DCLogic {
       });
     }
 
-    const st = root.querySelector('[data-stack="steps"]');
     if (st) {
       const rows = st.querySelectorAll('[data-step]');
-      const N = rows.length, s = prog(st) * (N + 0.7);
+      const N = rows.length, s = p.st * (N + 0.7);
       const active = Math.min(N - 1, Math.floor(s));
       rows.forEach((r, i) => {
         const done = i < active || s >= N, isActive = i === active;
@@ -326,7 +356,7 @@ class Component extends DCLogic {
         if (body) { const open = isActive && s < N; body.style.maxHeight = open ? '120px' : '0px'; body.style.marginTop = open ? '6px' : '0px'; }
       });
       const bar = st.querySelector('[data-steps-bar]');
-      if (bar) bar.style.width = `${clamp(s / N) * 100}%`;
+      if (bar) bar.style.transform = `scaleX(${clamp(s / N)})`;
       const cta = st.querySelector('[data-steps-cta]');
       if (cta) {
         const c = ease(clamp((s - N) / 0.5));
