@@ -27,6 +27,52 @@ img{display:block}
 .hdr-sub{white-space:nowrap}
 @media (max-width:420px){.hdr-sub{display:none}}
 @media (prefers-reduced-motion:reduce){*{transition:none !important}}
+
+/* Animaciones ligadas al scroll con CSS (las corre el compositor, al ritmo del scroll).
+   Donde no hay soporte, el JS de abajo hace lo mismo. La línea de tiempo de cada sección
+   es el tramo en que su bloque sticky está fijo: desde que la sección llega bajo el
+   encabezado (64px) hasta que su final llega al borde inferior. */
+@supports (animation-timeline: view()) {
+  [data-stack="svc"]{view-timeline:--svc block;view-timeline-inset:64px 0px}
+  [data-stack="chk"]{view-timeline:--chk block;view-timeline-inset:64px 0px}
+  [data-stack="steps"]{view-timeline:--steps block;view-timeline-inset:64px 0px}
+  [data-svc-card],[data-svc-shade],[data-chk],[data-steps-bar],[data-steps-cta]{animation-duration:auto;animation-fill-mode:both;animation-timing-function:linear}
+
+  /* Servicios: 5 tarjetas, cada una entra en su 25% del tramo y luego queda cubierta */
+  [data-svc-card]{animation-timeline:--svc;animation-range:contain 0% contain 100%}
+  [data-svc-card="0"]{animation-name:svc0}
+  [data-svc-card="1"]{animation-name:svc1}
+  [data-svc-card="2"]{animation-name:svc2}
+  [data-svc-card="3"]{animation-name:svc3}
+  [data-svc-card="4"]{animation-name:svc4}
+  @keyframes svc0{0%{translate:0 0;scale:1}25%,100%{translate:0 -12px;scale:.94}}
+  @keyframes svc1{0%{translate:0 115%;scale:1;animation-timing-function:cubic-bezier(.33,1,.68,1)}25%{translate:0 0;scale:1}50%,100%{translate:0 -12px;scale:.94}}
+  @keyframes svc2{0%,25%{translate:0 115%;scale:1;animation-timing-function:cubic-bezier(.33,1,.68,1)}50%{translate:0 0;scale:1}75%,100%{translate:0 -12px;scale:.94}}
+  @keyframes svc3{0%,50%{translate:0 115%;scale:1;animation-timing-function:cubic-bezier(.33,1,.68,1)}75%{translate:0 0;scale:1}100%{translate:0 -12px;scale:.94}}
+  @keyframes svc4{0%,75%{translate:0 115%;animation-timing-function:cubic-bezier(.33,1,.68,1)}100%{translate:0 0}}
+  [data-svc-shade]{animation-name:svcShade;animation-timeline:--svc}
+  [data-svc-card="0"] [data-svc-shade]{animation-range:contain 0% contain 25%}
+  [data-svc-card="1"] [data-svc-shade]{animation-range:contain 25% contain 50%}
+  [data-svc-card="2"] [data-svc-shade]{animation-range:contain 50% contain 75%}
+  [data-svc-card="3"] [data-svc-shade]{animation-range:contain 75% contain 100%}
+  [data-svc-card="4"] [data-svc-shade]{animation-name:none}
+  @keyframes svcShade{from{opacity:0}to{opacity:.12}}
+
+  /* Por qué confiar: cada fila entra girando desde la derecha en su propio tramo */
+  [data-chk]{animation-name:chkIn;animation-timeline:--chk;animation-timing-function:cubic-bezier(.33,1,.68,1)}
+  [data-chk="0"]{animation-range:contain 0% contain 11.8%}
+  [data-chk="1"]{animation-range:contain 18.9% contain 30.7%}
+  [data-chk="2"]{animation-range:contain 37.7% contain 49.5%}
+  [data-chk="3"]{animation-range:contain 56.6% contain 68.4%}
+  [data-chk="4"]{animation-range:contain 75.5% contain 87.3%}
+  @keyframes chkIn{from{translate:110% 0;rotate:9deg;opacity:0}70%{opacity:1}to{translate:0 0;rotate:0deg;opacity:1}}
+
+  /* Cómo cotizar: barra de progreso y botones finales */
+  [data-steps-bar]{animation-name:barFill;animation-timeline:--steps;animation-range:contain 0% contain 85.1%}
+  @keyframes barFill{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+  [data-steps-cta]{animation-name:ctaIn;animation-timeline:--steps;animation-range:contain 85.1% contain 95.7%;animation-timing-function:cubic-bezier(.33,1,.68,1)}
+  @keyframes ctaIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+}
 </style>
 </helmet>
 <div ref="{{ rootRef }}" style="font: var(--tipo-cuerpo); color: var(--tinta); background: var(--fondo); min-height: 100vh;">
@@ -230,6 +276,8 @@ class Component extends DCLogic {
   dragging = false;
 
   componentDidMount() {
+    // Con scroll-driven animations en CSS, el JS solo actualiza estados discretos
+    this.sda = !!(window.CSS && CSS.supports('animation-timeline: view()'));
     this.onScroll = () => this.tick();
     this.onResize = () => { this.stickyTop = null; this.tick(); };
     document.addEventListener('scroll', this.onScroll, { passive: true, capture: true });
@@ -288,18 +336,22 @@ class Component extends DCLogic {
     // innerHeight) para que no salte cuando la barra del navegador móvil aparece/desaparece.
     if (this.stickyTop == null && svc) this.stickyTop = parseFloat(getComputedStyle(svc.firstElementChild).top) || 0;
     const top = this.stickyTop || 0;
+    // Con CSS scroll-driven se mide igual que el rango `contain` del navegador (ventana
+    // visible menos el encabezado), para que los estados discretos coincidan con la animación.
+    const vh = window.innerHeight;
     const prog = el => {
       if (!el) return 0;
       const r = el.getBoundingClientRect();
-      const t = r.height - el.firstElementChild.offsetHeight - top;
+      const t = r.height - (this.sda ? vh - top : el.firstElementChild.offsetHeight + top);
       return t > 0 ? clamp((top - r.top) / t) : 0;
     };
     const target = { svc: prog(svc), chk: prog(chk), st: prog(st) };
 
     // 2) Suavizado: el progreso mostrado persigue al del scroll con una constante de tiempo fija
     // (igual a 60 o 120 Hz). En móvil el scroll llega a saltos; así el movimiento se ve continuo.
+    const sda = this.sda;
     const cur = this.cur;
-    if (snap || !cur) {
+    if (snap || !cur || sda) {
       this.cur = { ...target };
     } else {
       const dt = this.lastT ? Math.min(now - this.lastT, 100) : 16.7;
@@ -315,20 +367,23 @@ class Component extends DCLogic {
     this.lastT = this.raf ? now : 0; // si el bucle se detuvo, el próximo arranca con un frame estándar
     const p = this.cur;
 
-    // 3) Escrituras
+    // 3) Escrituras. `put` solo toca el DOM si el valor cambió.
+    // Los valores continuos (transform/opacity) solo se escriben sin soporte CSS (sda).
+    const put = (el, k, v) => { if (el && el.style[k] !== v) el.style[k] = v; };
     if (svc) {
       const cards = svc.querySelectorAll('[data-svc-card]');
       const N = cards.length, s = p.svc * (N - 1);
       cards.forEach((c, i) => {
+        put(c, 'zIndex', String(i));
+        if (sda) return;
         const enter = i === 0 ? 1 : ease(clamp(s - (i - 1)));
         const covered = clamp(s - i);
         c.style.transform = `translateY(${(1 - enter) * 115}%) translateY(${-covered * 12}px) scale(${1 - covered * 0.06})`;
-        const shade = c.querySelector('[data-svc-shade]');
-        if (shade) shade.style.opacity = String(covered * 0.12);
-        c.style.zIndex = i;
+        put(c.querySelector('[data-svc-shade]'), 'opacity', String(covered * 0.12));
       });
       const cnt = svc.querySelector('[data-svc-count]');
-      if (cnt) cnt.textContent = `0${Math.min(N, Math.round(s) + 1)} / 0${N}`;
+      const txt = `0${Math.min(N, Math.round(s) + 1)} / 0${N}`;
+      if (cnt && cnt.textContent !== txt) cnt.textContent = txt;
     }
 
     if (chk) {
@@ -336,10 +391,14 @@ class Component extends DCLogic {
       const N = items.length, s = p.chk * (N + 0.3);
       items.forEach((el, i) => {
         const e = ease(clamp((s - i) * 1.6));
-        el.style.opacity = String(clamp(e * 1.4));
-        el.style.transform = `translateX(${(1 - e) * 110}%) rotate(${(1 - e) * 9}deg)`;
+        if (!sda) {
+          el.style.opacity = String(clamp(e * 1.4));
+          el.style.transform = `translateX(${(1 - e) * 110}%) rotate(${(1 - e) * 9}deg)`;
+        }
         const box = el.querySelector('[data-chk-box]');
-        if (box) { const on = e >= 0.98; box.style.background = on ? 'var(--azul)' : 'transparent'; box.style.borderColor = on ? 'var(--azul)' : 'var(--linea)'; }
+        const on = e >= 0.98;
+        put(box, 'background', on ? 'var(--azul)' : 'transparent');
+        put(box, 'borderColor', on ? 'var(--azul)' : 'var(--linea)');
       });
     }
 
@@ -349,20 +408,25 @@ class Component extends DCLogic {
       const active = Math.min(N - 1, Math.floor(s));
       rows.forEach((r, i) => {
         const done = i < active || s >= N, isActive = i === active;
-        r.style.opacity = (isActive || done) ? '1' : '0.45';
+        put(r, 'opacity', (isActive || done) ? '1' : '0.45');
         const dot = r.querySelector('[data-step-dot]');
-        if (dot) { dot.style.background = (isActive || done) ? 'var(--sobre-color)' : 'transparent'; dot.style.color = (isActive || done) ? 'var(--marino)' : 'var(--sobre-color)'; }
+        put(dot, 'background', (isActive || done) ? 'var(--sobre-color)' : 'transparent');
+        put(dot, 'color', (isActive || done) ? 'var(--marino)' : 'var(--sobre-color)');
         const body = r.querySelector('[data-step-body]');
-        if (body) { const open = isActive && s < N; body.style.maxHeight = open ? '120px' : '0px'; body.style.marginTop = open ? '6px' : '0px'; }
+        const open = isActive && s < N;
+        put(body, 'maxHeight', open ? '120px' : '0px');
+        put(body, 'marginTop', open ? '6px' : '0px');
       });
       const bar = st.querySelector('[data-steps-bar]');
-      if (bar) bar.style.transform = `scaleX(${clamp(s / N)})`;
+      if (bar && !sda) bar.style.transform = `scaleX(${clamp(s / N)})`;
       const cta = st.querySelector('[data-steps-cta]');
       if (cta) {
         const c = ease(clamp((s - N) / 0.5));
-        cta.style.opacity = String(c);
-        cta.style.transform = `translateY(${(1 - c) * 16}px)`;
-        cta.style.pointerEvents = c > 0.5 ? 'auto' : 'none';
+        if (!sda) {
+          cta.style.opacity = String(c);
+          cta.style.transform = `translateY(${(1 - c) * 16}px)`;
+        }
+        put(cta, 'pointerEvents', c > 0.5 ? 'auto' : 'none');
       }
     }
   }
