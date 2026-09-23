@@ -11,10 +11,22 @@
 <link rel="stylesheet" href="_ds/talleres-de-colisi-n-1ae645df-4231-4103-949a-8aa7d3f60612/styles.css">
 <script src="_ds/talleres-de-colisi-n-1ae645df-4231-4103-949a-8aa7d3f60612/_ds_bundle.js"></script>
 <style>
-html,body{margin:0;padding:0;background:#fff;-webkit-font-smoothing:antialiased}
+html,body{margin:0;padding:0;background:#fff;-webkit-font-smoothing:antialiased;overflow-x:clip;-webkit-text-size-adjust:100%}
 *{box-sizing:border-box}
-a{color:var(--azul)}a:hover{color:var(--marino)}
+a{color:var(--azul);-webkit-tap-highlight-color:transparent}
 img{display:block}
+/* Hover solo en dispositivos con mouse: en táctil se quedaba "pegado" tras tocar */
+@media (hover:hover) and (pointer:fine){
+  a:hover{color:var(--marino)}
+  .fx:hover{background-color:var(--azul) !important;border-color:var(--azul) !important;color:var(--sobre-color) !important}
+  .fx-x:hover{transform:perspective(600px) rotateX(360deg)}
+  .fx-y:hover{transform:perspective(400px) rotateY(360deg)}
+  .fx-shadow:hover{box-shadow:var(--sombra-md) !important}
+}
+.fx:active{transform:scale(.97)}
+.hdr-sub{white-space:nowrap}
+@media (max-width:420px){.hdr-sub{display:none}}
+@media (prefers-reduced-motion:reduce){*{transition:none !important}}
 </style>
 </helmet>
 <div ref="{{ rootRef }}" style="font: var(--tipo-cuerpo); color: var(--tinta); background: var(--fondo); min-height: 100vh;">
@@ -22,29 +34,29 @@ img{display:block}
 <header data-screen-label="Encabezado" style="position: sticky; top: 0; z-index: 50; height: 64px; background: var(--marino); display: flex; align-items: center; justify-content: space-between; gap: var(--espacio-3); padding: 0 var(--espacio-3);">
   <a href="#inicio" style="display: flex; align-items: baseline; gap: var(--espacio-2); text-decoration: none; color: var(--sobre-color);">
     <span style="font: 800 24px/1 var(--font-sans); letter-spacing: 0.04em;">OSW</span>
-    <span style="font: 700 12px/1.2 var(--font-sans); letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.85;">Old School Works</span>
+    <span class="hdr-sub" style="font: 700 12px/1.2 var(--font-sans); letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.85;">Old School Works</span>
   </a>
   <div style="display: flex; gap: var(--espacio-2);">
-    <a href="tel:+50241686982" aria-label="Llamar" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: var(--radio-sm); border: 1px solid rgba(255,255,255,0.4); color: var(--sobre-color); transition: transform .5s cubic-bezier(.3,.7,.3,1), background-color .2s, border-color .2s;" style-hover="transform: perspective(400px) rotateY(360deg); background-color: var(--azul); border-color: var(--azul); color: var(--sobre-color);">
+    <a href="tel:+50241686982" aria-label="Llamar" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: var(--radio-sm); border: 1px solid rgba(255,255,255,0.4); color: var(--sobre-color); transition: transform .5s cubic-bezier(.3,.7,.3,1), background-color .2s, border-color .2s;" class="fx fx-y">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"></path></svg>
     </a>
-    <a href="{{ waLink }}" target="_blank" rel="noopener" style="height: 44px; display: flex; align-items: center; gap: var(--espacio-2); padding: 0 var(--espacio-3); border-radius: var(--radio-sm); background: var(--whatsapp); color: var(--sobre-color); text-decoration: none; font: var(--tipo-boton); font-size: 14px; letter-spacing: var(--tracking-boton); text-transform: uppercase; transition: transform .5s cubic-bezier(.3,.7,.3,1), background-color .2s;" style-hover="transform: perspective(400px) rotateX(360deg); background-color: var(--azul); color: var(--sobre-color);">
+    <a href="{{ waLink }}" target="_blank" rel="noopener" style="height: 44px; display: flex; align-items: center; gap: var(--espacio-2); padding: 0 var(--espacio-3); border-radius: var(--radio-sm); background: var(--whatsapp); color: var(--sobre-color); text-decoration: none; font: var(--tipo-boton); font-size: 14px; letter-spacing: var(--tracking-boton); text-transform: uppercase; transition: transform .5s cubic-bezier(.3,.7,.3,1), background-color .2s;" class="fx fx-x">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 21l2.1-5.4A8.4 8.4 0 1 1 21 11.5z"></path></svg>
       WhatsApp
     </a>
   </div>
 </header>
 
-<section id="inicio" data-screen-label="Hero" style="position: relative; min-height: calc(100vh - 64px); display: flex; align-items: flex-end; overflow: hidden; background: var(--marino);">
-  <img src="img/taller.png" alt="Interior del taller OSW con un carro en proceso de pintura" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 55% center;">
+<section id="inicio" data-screen-label="Hero" style="position: relative; min-height: calc(100svh - 64px); display: flex; align-items: flex-end; overflow: hidden; background: var(--marino);">
+  <img src="img/taller.webp" fetchpriority="high" alt="Interior del taller OSW con un carro en proceso de pintura" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 55% center;">
   <div style="position: absolute; inset: 0; background: rgba(11,42,74,0.78);"></div>
   <div style="position: relative; width: 100%; max-width: 1120px; margin: 0 auto; padding: var(--espacio-6) var(--espacio-3) calc(var(--espacio-7) + 56px); display: flex; flex-direction: column; gap: var(--espacio-4); color: var(--sobre-color);">
     <span data-reveal="" style="font: var(--tipo-boton); font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase;">Enderezado y pintura · Zona 11</span>
     <h1 data-reveal="" data-delay="60" style="font: var(--tipo-titulo-1); font-size: clamp(36px, 7vw, 56px); letter-spacing: var(--tracking-titulo-1); margin: 0; max-width: 14ch; text-wrap: balance;">Su carro, como si el golpe nunca hubiera pasado.</h1>
     <p data-reveal="" data-delay="120" style="font: var(--tipo-cuerpo-grande); margin: 0; max-width: 36ch; text-wrap: pretty;">Taller de colisión en la Ciudad de Guatemala. Envíe fotos del daño por WhatsApp y reciba su presupuesto sin salir de casa.</p>
     <div data-reveal="" data-delay="180" style="display: flex; flex-wrap: wrap; gap: var(--espacio-3); margin-top: var(--espacio-2);">
-      <a href="{{ waLink }}" target="_blank" rel="noopener" style="display: flex; align-items: center; justify-content: center; gap: var(--espacio-2); flex: 1 1 200px; font: var(--tipo-boton); letter-spacing: var(--tracking-boton); text-transform: uppercase; color: var(--sobre-color); background: var(--whatsapp); border-radius: var(--radio-sm); padding: var(--espacio-3) var(--espacio-4); text-decoration: none; transition: transform .5s cubic-bezier(.3,.7,.3,1), background-color .2s;" style-hover="transform: perspective(600px) rotateX(360deg); background-color: var(--azul); color: var(--sobre-color);">Cotizar por WhatsApp</a>
-      <a href="tel:+50241686982" style="display: flex; align-items: center; justify-content: center; flex: 1 1 200px; font: var(--tipo-boton); letter-spacing: var(--tracking-boton); text-transform: uppercase; color: var(--sobre-color); background: transparent; border: 2px solid var(--sobre-color); border-radius: var(--radio-sm); padding: 14px var(--espacio-4); text-decoration: none; transition: transform .5s cubic-bezier(.3,.7,.3,1), background-color .2s, border-color .2s;" style-hover="transform: perspective(600px) rotateX(360deg); background-color: var(--azul); border-color: var(--azul); color: var(--sobre-color);">Llamar +502 4168 6982</a>
+      <a href="{{ waLink }}" target="_blank" rel="noopener" style="display: flex; align-items: center; justify-content: center; gap: var(--espacio-2); flex: 1 1 200px; font: var(--tipo-boton); letter-spacing: var(--tracking-boton); text-transform: uppercase; color: var(--sobre-color); background: var(--whatsapp); border-radius: var(--radio-sm); padding: var(--espacio-3) var(--espacio-4); text-decoration: none; transition: transform .5s cubic-bezier(.3,.7,.3,1), background-color .2s;" class="fx fx-x">Cotizar por WhatsApp</a>
+      <a href="tel:+50241686982" style="display: flex; align-items: center; justify-content: center; flex: 1 1 200px; font: var(--tipo-boton); letter-spacing: var(--tracking-boton); text-transform: uppercase; color: var(--sobre-color); background: transparent; border: 2px solid var(--sobre-color); border-radius: var(--radio-sm); padding: 14px var(--espacio-4); text-decoration: none; transition: transform .5s cubic-bezier(.3,.7,.3,1), background-color .2s, border-color .2s;" class="fx fx-x">Llamar +502 4168 6982</a>
     </div>
     <span data-reveal="" data-delay="240" style="font: var(--tipo-pequeno);">14 Avenida 4-24, Zona 11, Ciudad de Guatemala</span>
   </div>
@@ -58,8 +70,8 @@ img{display:block}
       <p style="margin: 0; color: var(--apagado); max-width: 52ch;">Deslice para comparar. Enderezamos la lámina, igualamos el color y devolvemos el brillo.</p>
     </div>
     <div data-reveal="" data-delay="80" ref="{{ baRef }}" onPointerDown="{{ baDown }}" onPointerMove="{{ baMove }}" onPointerUp="{{ baUp }}" onPointerCancel="{{ baUp }}" style="position: relative; aspect-ratio: 3 / 2; border-radius: var(--radio-md); overflow: hidden; box-shadow: var(--sombra-md); cursor: ew-resize; touch-action: pan-y; user-select: none; background: var(--superficie);">
-      <img src="img/despues.png" alt="Puerta reparada y pintada" draggable="false" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none;">
-      <img src="img/antes.png" alt="Puerta con golpe y rayones" draggable="false" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; clip-path: inset(0 {{ baClip }}% 0 0);">
+      <img src="img/despues.webp" alt="Puerta reparada y pintada" draggable="false" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none;">
+      <img src="img/antes.webp" alt="Puerta con golpe y rayones" draggable="false" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; clip-path: inset(0 {{ baClip }}% 0 0);">
       <span style="position: absolute; top: var(--espacio-3); left: var(--espacio-3); font: var(--tipo-boton); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; background: var(--marino); color: var(--sobre-color); padding: 6px 10px; border-radius: var(--radio-sm);">Antes</span>
       <span style="position: absolute; top: var(--espacio-3); right: var(--espacio-3); font: var(--tipo-boton); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; background: var(--azul); color: var(--sobre-color); padding: 6px 10px; border-radius: var(--radio-sm);">Después</span>
       <div style="position: absolute; top: 0; bottom: 0; left: {{ baPos }}%; width: 3px; margin-left: -1.5px; background: var(--sobre-color); pointer-events: none;">
@@ -71,8 +83,8 @@ img{display:block}
   </div>
 </section>
 
-<section id="servicios" data-screen-label="Servicios" data-stack="svc" style="position: relative; height: calc(100vh + 128vh); background: var(--superficie);">
-  <div style="position: sticky; top: 64px; height: calc(100vh - 64px); padding: var(--espacio-5) var(--espacio-3) 96px; display: flex; flex-direction: column; gap: var(--espacio-4); max-width: 1120px; margin: 0 auto;">
+<section id="servicios" data-screen-label="Servicios" data-stack="svc" style="position: relative; height: calc(100svh + 128svh); overflow-x: clip; background: var(--superficie);">
+  <div style="position: sticky; top: 64px; height: calc(100svh - 64px); padding: var(--espacio-5) var(--espacio-3) 96px; display: flex; flex-direction: column; gap: var(--espacio-4); max-width: 1120px; margin: 0 auto;">
     <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: var(--espacio-3);">
       <div style="display: flex; flex-direction: column; gap: var(--espacio-1);">
         <span style="font: var(--tipo-boton); font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--azul);">Servicios</span>
@@ -84,8 +96,9 @@ img{display:block}
       <sc-for list="{{ servicios }}" as="s" hint-placeholder-count="5">
         <article data-svc-card="{{ $index }}" style="position: absolute; inset: 0; background: var(--fondo); border-radius: var(--radio-md); box-shadow: var(--sombra-md); overflow: hidden; display: flex; flex-direction: column; transform-origin: 50% 0; will-change: transform;">
           <div style="flex: 1; min-height: 0; position: relative; background: var(--linea);">
-            <img src="{{ s.img }}" alt="{{ s.titulo }}" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: {{ s.pos }};">
+            <img src="{{ s.img }}" alt="{{ s.titulo }}" decoding="async" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: {{ s.pos }};">
           </div>
+          <div data-svc-shade="" style="position: absolute; inset: 0; background: #000; opacity: 0; pointer-events: none;"></div>
           <div style="padding: var(--espacio-4); display: flex; flex-direction: column; gap: var(--espacio-2);">
             <span style="font: var(--tipo-boton); font-size: 14px; color: var(--azul);">{{ s.num }}</span>
             <h3 style="font: var(--tipo-titulo-3); margin: 0;">{{ s.titulo }}</h3>
@@ -97,8 +110,8 @@ img{display:block}
   </div>
 </section>
 
-<section id="confianza" data-screen-label="Por qué confiar" data-stack="chk" style="position: relative; height: calc(100vh + 100vh); background: var(--fondo);">
-  <div style="position: sticky; top: 64px; height: calc(100vh - 64px); padding: var(--espacio-5) var(--espacio-3) 96px; display: flex; flex-direction: column; justify-content: center; gap: var(--espacio-4); max-width: 720px; margin: 0 auto;">
+<section id="confianza" data-screen-label="Por qué confiar" data-stack="chk" style="position: relative; height: calc(100svh + 100svh); overflow-x: clip; background: var(--fondo);">
+  <div style="position: sticky; top: 64px; height: calc(100svh - 64px); padding: var(--espacio-5) var(--espacio-3) 96px; display: flex; flex-direction: column; justify-content: center; gap: var(--espacio-4); max-width: 720px; margin: 0 auto;">
     <div style="display: flex; flex-direction: column; gap: var(--espacio-1);">
       <span style="font: var(--tipo-boton); font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--azul);">Por qué confiar en OSW</span>
       <h2 style="font: var(--tipo-titulo-2); margin: 0; text-wrap: balance;">Trabajo a la antigua: bien hecho y sin sorpresas</h2>
@@ -116,8 +129,8 @@ img{display:block}
   </div>
 </section>
 
-<section id="cotizar" data-screen-label="Cómo cotizar" data-stack="steps" style="position: relative; height: calc(100vh + 130vh); background: var(--marino); color: var(--sobre-color);">
-  <div style="position: sticky; top: 64px; height: calc(100vh - 64px); padding: var(--espacio-5) var(--espacio-3) 96px; display: flex; flex-direction: column; justify-content: center; gap: var(--espacio-4); max-width: 720px; margin: 0 auto;">
+<section id="cotizar" data-screen-label="Cómo cotizar" data-stack="steps" style="position: relative; height: calc(100svh + 130svh); overflow-x: clip; background: var(--marino); color: var(--sobre-color);">
+  <div style="position: sticky; top: 64px; height: calc(100svh - 64px); padding: var(--espacio-5) var(--espacio-3) 96px; display: flex; flex-direction: column; justify-content: center; gap: var(--espacio-4); max-width: 720px; margin: 0 auto;">
     <div style="display: flex; flex-direction: column; gap: var(--espacio-1);">
       <span style="font: var(--tipo-boton); font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase;">Cómo cotizar</span>
       <h2 style="font: var(--tipo-titulo-2); margin: 0;">Cuatro pasos, sin vueltas</h2>
@@ -137,8 +150,8 @@ img{display:block}
       </sc-for>
     </ol>
     <div data-steps-cta="" style="display: flex; flex-wrap: wrap; gap: var(--espacio-3); opacity: 0; transform: translateY(16px); pointer-events: none;">
-      <a href="{{ waLink }}" target="_blank" rel="noopener" style="display: flex; align-items: center; justify-content: center; flex: 1 1 200px; font: var(--tipo-boton); letter-spacing: var(--tracking-boton); text-transform: uppercase; color: var(--sobre-color); background: var(--whatsapp); border-radius: var(--radio-sm); padding: var(--espacio-3) var(--espacio-4); text-decoration: none; transition: transform .5s cubic-bezier(.3,.7,.3,1), background-color .2s;" style-hover="transform: perspective(600px) rotateX(360deg); background-color: var(--azul); color: var(--sobre-color);">Empezar por WhatsApp</a>
-      <a href="tel:+50241686982" style="display: flex; align-items: center; justify-content: center; flex: 1 1 200px; font: var(--tipo-boton); letter-spacing: var(--tracking-boton); text-transform: uppercase; color: var(--marino); background: var(--sobre-color); border-radius: var(--radio-sm); padding: var(--espacio-3) var(--espacio-4); text-decoration: none; transition: transform .5s cubic-bezier(.3,.7,.3,1), background-color .2s, color .2s;" style-hover="transform: perspective(600px) rotateX(360deg); background-color: var(--azul); color: var(--sobre-color);">Llamar ahora</a>
+      <a href="{{ waLink }}" target="_blank" rel="noopener" style="display: flex; align-items: center; justify-content: center; flex: 1 1 200px; font: var(--tipo-boton); letter-spacing: var(--tracking-boton); text-transform: uppercase; color: var(--sobre-color); background: var(--whatsapp); border-radius: var(--radio-sm); padding: var(--espacio-3) var(--espacio-4); text-decoration: none; transition: transform .5s cubic-bezier(.3,.7,.3,1), background-color .2s;" class="fx fx-x">Empezar por WhatsApp</a>
+      <a href="tel:+50241686982" style="display: flex; align-items: center; justify-content: center; flex: 1 1 200px; font: var(--tipo-boton); letter-spacing: var(--tracking-boton); text-transform: uppercase; color: var(--marino); background: var(--sobre-color); border-radius: var(--radio-sm); padding: var(--espacio-3) var(--espacio-4); text-decoration: none; transition: transform .5s cubic-bezier(.3,.7,.3,1), background-color .2s, color .2s;" class="fx fx-x">Llamar ahora</a>
     </div>
   </div>
 </section>
@@ -169,8 +182,8 @@ img{display:block}
         </div>
       </div>
       <div data-reveal="" data-delay="120" style="display: flex; flex-wrap: wrap; gap: var(--espacio-3);">
-        <a href="https://www.google.com/maps/search/?api=1&amp;query=14+Avenida+4-24+Zona+11+Guatemala" target="_blank" rel="noopener" style="display: flex; align-items: center; justify-content: center; flex: 1 1 180px; font: var(--tipo-boton); letter-spacing: var(--tracking-boton); text-transform: uppercase; color: var(--azul); background: var(--fondo); border: 2px solid var(--azul); border-radius: var(--radio-sm); padding: 14px var(--espacio-4); text-decoration: none; box-shadow: var(--sombra-sm); transition: transform .5s cubic-bezier(.3,.7,.3,1), background-color .2s, color .2s;" style-hover="transform: perspective(600px) rotateX(360deg); background-color: var(--azul); color: var(--sobre-color); box-shadow: var(--sombra-md);">Cómo llegar</a>
-        <a href="https://waze.com/ul?q=14%20Avenida%204-24%20Zona%2011%20Guatemala" target="_blank" rel="noopener" style="display: flex; align-items: center; justify-content: center; flex: 1 1 180px; font: var(--tipo-boton); letter-spacing: var(--tracking-boton); text-transform: uppercase; color: var(--azul); background: var(--fondo); border: 2px solid var(--azul); border-radius: var(--radio-sm); padding: 14px var(--espacio-4); text-decoration: none; box-shadow: var(--sombra-sm); transition: transform .5s cubic-bezier(.3,.7,.3,1), background-color .2s, color .2s;" style-hover="transform: perspective(600px) rotateX(360deg); background-color: var(--azul); color: var(--sobre-color); box-shadow: var(--sombra-md);">Abrir en Waze</a>
+        <a href="https://www.google.com/maps/search/?api=1&amp;query=14+Avenida+4-24+Zona+11+Guatemala" target="_blank" rel="noopener" style="display: flex; align-items: center; justify-content: center; flex: 1 1 180px; font: var(--tipo-boton); letter-spacing: var(--tracking-boton); text-transform: uppercase; color: var(--azul); background: var(--fondo); border: 2px solid var(--azul); border-radius: var(--radio-sm); padding: 14px var(--espacio-4); text-decoration: none; box-shadow: var(--sombra-sm); transition: transform .5s cubic-bezier(.3,.7,.3,1), background-color .2s, color .2s;" class="fx fx-x fx-shadow">Cómo llegar</a>
+        <a href="https://waze.com/ul?q=14%20Avenida%204-24%20Zona%2011%20Guatemala" target="_blank" rel="noopener" style="display: flex; align-items: center; justify-content: center; flex: 1 1 180px; font: var(--tipo-boton); letter-spacing: var(--tracking-boton); text-transform: uppercase; color: var(--azul); background: var(--fondo); border: 2px solid var(--azul); border-radius: var(--radio-sm); padding: 14px var(--espacio-4); text-decoration: none; box-shadow: var(--sombra-sm); transition: transform .5s cubic-bezier(.3,.7,.3,1), background-color .2s, color .2s;" class="fx fx-x fx-shadow">Abrir en Waze</a>
       </div>
     </div>
     <div data-reveal="" data-delay="100" style="border-radius: var(--radio-md); overflow: hidden; border: 1px solid var(--linea); aspect-ratio: 4 / 3; background: var(--linea);">
@@ -196,11 +209,11 @@ img{display:block}
 <sc-if value="{{ barraMovil }}" hint-placeholder-val="{{ true }}">
   <div style="position: fixed; left: 0; right: 0; bottom: 0; z-index: 60; padding: var(--espacio-2) var(--espacio-3) calc(var(--espacio-2) + env(safe-area-inset-bottom)); display: flex; justify-content: center; pointer-events: none;">
     <div style="pointer-events: auto; width: 100%; max-width: 520px; display: grid; grid-template-columns: 1fr 1fr; gap: var(--espacio-2); padding: var(--espacio-2); background: var(--fondo); border-radius: var(--radio-md); box-shadow: var(--sombra-lg);">
-      <a href="tel:+50241686982" style="display: flex; align-items: center; justify-content: center; gap: var(--espacio-2); height: 48px; font: var(--tipo-boton); font-size: 15px; letter-spacing: var(--tracking-boton); text-transform: uppercase; color: var(--azul); border: 2px solid var(--azul); border-radius: var(--radio-sm); text-decoration: none; transition: transform .5s cubic-bezier(.3,.7,.3,1), background-color .2s, color .2s;" style-hover="transform: perspective(500px) rotateX(360deg); background-color: var(--azul); color: var(--sobre-color);">
+      <a href="tel:+50241686982" style="display: flex; align-items: center; justify-content: center; gap: var(--espacio-2); height: 48px; font: var(--tipo-boton); font-size: 15px; letter-spacing: var(--tracking-boton); text-transform: uppercase; color: var(--azul); border: 2px solid var(--azul); border-radius: var(--radio-sm); text-decoration: none; transition: transform .5s cubic-bezier(.3,.7,.3,1), background-color .2s, color .2s;" class="fx fx-x">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"></path></svg>
         Llamar
       </a>
-      <a href="{{ waLink }}" target="_blank" rel="noopener" style="display: flex; align-items: center; justify-content: center; gap: var(--espacio-2); height: 48px; font: var(--tipo-boton); font-size: 15px; letter-spacing: var(--tracking-boton); text-transform: uppercase; color: var(--sobre-color); background: var(--whatsapp); border-radius: var(--radio-sm); text-decoration: none; transition: transform .5s cubic-bezier(.3,.7,.3,1), background-color .2s;" style-hover="transform: perspective(500px) rotateX(360deg); background-color: var(--azul); color: var(--sobre-color);">
+      <a href="{{ waLink }}" target="_blank" rel="noopener" style="display: flex; align-items: center; justify-content: center; gap: var(--espacio-2); height: 48px; font: var(--tipo-boton); font-size: 15px; letter-spacing: var(--tracking-boton); text-transform: uppercase; color: var(--sobre-color); background: var(--whatsapp); border-radius: var(--radio-sm); text-decoration: none; transition: transform .5s cubic-bezier(.3,.7,.3,1), background-color .2s;" class="fx fx-x">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 21l2.1-5.4A8.4 8.4 0 1 1 21 11.5z"></path></svg>
         WhatsApp
       </a>
@@ -260,7 +273,15 @@ class Component extends DCLogic {
     const vh = window.innerHeight;
     const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
     const ease = x => 1 - Math.pow(1 - x, 3);
-    const prog = el => { const r = el.getBoundingClientRect(); const t = r.height - vh; return t > 0 ? clamp(-r.top / t) : 0; };
+    // Progreso del tramo en que el bloque sticky está fijo. Se mide con su altura real
+    // (no con innerHeight) para que no salte cuando la barra del navegador móvil aparece/desaparece.
+    const prog = el => {
+      const sticky = el.firstElementChild;
+      const top = sticky ? parseFloat(getComputedStyle(sticky).top) || 0 : 0;
+      const r = el.getBoundingClientRect();
+      const t = r.height - (sticky ? sticky.offsetHeight : vh) - top;
+      return t > 0 ? clamp((top - r.top) / t) : 0;
+    };
 
     const svc = root.querySelector('[data-stack="svc"]');
     if (svc) {
@@ -270,7 +291,8 @@ class Component extends DCLogic {
         const enter = i === 0 ? 1 : ease(clamp(s - (i - 1)));
         const covered = clamp(s - i);
         c.style.transform = `translateY(${(1 - enter) * 115}%) translateY(${-covered * 12}px) scale(${1 - covered * 0.06})`;
-        c.style.filter = `brightness(${1 - covered * 0.12})`;
+        const shade = c.querySelector('[data-svc-shade]');
+        if (shade) shade.style.opacity = String(covered * 0.12);
         c.style.zIndex = i;
       });
       const cnt = svc.querySelector('[data-svc-count]');
@@ -319,8 +341,10 @@ class Component extends DCLogic {
     const el = this.baRef.current;
     if (!el) return;
     const r = el.getBoundingClientRect();
-    const p = Math.min(100, Math.max(0, ((e.clientX - r.left) / r.width) * 100));
-    this.setState({ baPos: p });
+    this.baNext = Math.min(100, Math.max(0, ((e.clientX - r.left) / r.width) * 100));
+    // Un solo render por frame: en móvil pointermove dispara muchas veces por frame
+    if (this.baRaf) return;
+    this.baRaf = requestAnimationFrame(() => { this.baRaf = null; this.setState({ baPos: this.baNext }); });
   }
 
   renderVals() {
@@ -336,11 +360,11 @@ class Component extends DCLogic {
       waLink: 'https://wa.me/50241686982?text=' + encodeURIComponent(msg),
       barraMovil: this.props.barraMovil ?? true,
       servicios: [
-        { num: '01', img: 'img/proceso.png', pos: '40% center', titulo: 'Enderezado de carrocería', texto: 'Recuperamos la forma original de puertas, guardafangos, capó y paneles después de un golpe.' },
-        { num: '02', img: 'img/herramientas.png', pos: '80% center', titulo: 'Pintura completa y por pieza', texto: 'Pintamos en cabina para un acabado parejo, sin polvo y con brillo duradero.' },
-        { num: '03', img: 'img/despues.png', pos: '45% center', titulo: 'Igualación de color', texto: 'Igualamos el tono de fábrica para que la reparación no se note junto al resto del carro.' },
-        { num: '04', img: 'img/antes.png', pos: '35% center', titulo: 'Golpes y rayones', texto: 'Desde un rayón superficial hasta abolladuras profundas en lámina y bumper.' },
-        { num: '05', img: 'img/taller.png', pos: '55% center', titulo: 'Pulido y abrillantado', texto: 'Retiramos marcas finas y devolvemos el brillo a la pintura.' }
+        { num: '01', img: 'img/proceso.webp', pos: '40% center', titulo: 'Enderezado de carrocería', texto: 'Recuperamos la forma original de puertas, guardafangos, capó y paneles después de un golpe.' },
+        { num: '02', img: 'img/herramientas.webp', pos: '80% center', titulo: 'Pintura completa y por pieza', texto: 'Pintamos en cabina para un acabado parejo, sin polvo y con brillo duradero.' },
+        { num: '03', img: 'img/despues.webp', pos: '45% center', titulo: 'Igualación de color', texto: 'Igualamos el tono de fábrica para que la reparación no se note junto al resto del carro.' },
+        { num: '04', img: 'img/antes.webp', pos: '35% center', titulo: 'Golpes y rayones', texto: 'Desde un rayón superficial hasta abolladuras profundas en lámina y bumper.' },
+        { num: '05', img: 'img/taller.webp', pos: '55% center', titulo: 'Pulido y abrillantado', texto: 'Retiramos marcas finas y devolvemos el brillo a la pintura.' }
       ],
       garantias: [
         'Presupuesto claro antes de empezar',
