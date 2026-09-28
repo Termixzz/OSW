@@ -28,10 +28,56 @@ img{display:block}
 @media (max-width:420px){.hdr-sub{display:none}}
 @media (prefers-reduced-motion:reduce){*{transition:none !important}}
 
-/* Animaciones ligadas al scroll con CSS (las corre el compositor, al ritmo del scroll).
-   Donde no hay soporte, el JS de abajo hace lo mismo. La línea de tiempo de cada sección
-   es el tramo en que su bloque sticky está fijo: desde que la sección llega bajo el
+/* Secciones con animación fijada al scroll (solo escritorio): la sección es más alta que
+   la pantalla y su contenido queda fijo (sticky) mientras el scroll avanza la animación. */
+.stk{position:relative;overflow-x:clip}
+.stk-svc{height:calc(100svh + 128svh)}
+.stk-chk{height:calc(100svh + 100svh)}
+.stk-steps{height:calc(100svh + 130svh)}
+.stk-pin{position:sticky;top:64px;height:calc(100svh - 64px);padding:var(--espacio-5) var(--espacio-3) 96px}
+.svc-track{position:relative;flex:1;min-height:0}
+.svc-card{position:absolute;inset:0;will-change:transform}
+.svc-media{flex:1;min-height:0}
+.svc-dots{display:none}
+.step{opacity:.45}
+.steps-cta{opacity:0;transform:translateY(16px);pointer-events:none}
+
+/* Móvil: sin secciones fijadas, porque el scroll que no mueve la página desorienta.
+   Servicios pasa a carrusel horizontal; las otras dos son listas normales. */
+@media (max-width:767px){
+  .stk-svc,.stk-chk,.stk-steps{height:auto}
+  .stk-pin{position:static;height:auto;padding:clamp(48px,8vw,64px) var(--espacio-3)}
+  .svc-track{display:flex;gap:12px;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;scroll-padding:0 var(--espacio-3);margin:0 calc(-1 * var(--espacio-3));padding:4px var(--espacio-3) 16px;scrollbar-width:none}
+  .svc-track::-webkit-scrollbar{display:none}
+  .svc-card{position:relative;inset:auto;flex:0 0 86%;scroll-snap-align:start;will-change:auto}
+  .svc-media{flex:none;aspect-ratio:4 / 3}
+  .svc-dots{display:flex;justify-content:center;margin-top:calc(-1 * var(--espacio-3))}
+  .svc-dots button{width:28px;height:28px;padding:0;border:0;background:none;display:grid;place-items:center;cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .svc-dots button::before{content:"";width:8px;height:8px;border-radius:var(--radio-pill);background:var(--linea);transition:width .25s,background-color .25s}
+  .svc-dots button[aria-current="true"]::before{width:22px;background:var(--azul)}
+  .step{opacity:1}
+  .steps-track{display:none}
+  .steps-cta{opacity:1;transform:none;pointer-events:auto}
+}
+
+/* Móvil con soporte: las filas de "Por qué confiar" entran y se marcan al aparecer en
+   pantalla, y los pasos se rellenan al llegar a ellos; todo ligado al scroll normal. */
+@media (max-width:767px){
+  @supports (animation-timeline: view()) {
+    [data-chk]{animation:chkInM linear both;animation-timeline:view();animation-range:entry 0% cover 35%}
+    @keyframes chkInM{from{translate:24% 0;rotate:3deg;opacity:0}to{translate:0 0;rotate:0deg;opacity:1}}
+    [data-chk-box]{animation:boxOn linear both;animation-timeline:view();animation-range:entry 0% cover 35%}
+    @keyframes boxOn{0%,85%{background:transparent;border-color:var(--linea)}100%{background:var(--azul);border-color:var(--azul)}}
+    [data-step-dot]{animation:dotOn linear both;animation-timeline:view();animation-range:entry 0% cover 45%}
+    @keyframes dotOn{0%,85%{background:transparent;color:var(--sobre-color)}100%{background:var(--sobre-color);color:var(--marino)}}
+  }
+}
+
+/* Escritorio: animaciones ligadas al scroll con CSS (las corre el compositor, al ritmo del
+   scroll). Donde no hay soporte, el JS de abajo hace lo mismo. La línea de tiempo de cada
+   sección es el tramo en que su bloque sticky está fijo: desde que la sección llega bajo el
    encabezado (64px) hasta que su final llega al borde inferior. */
+@media (min-width:768px){
 @supports (animation-timeline: view()) {
   [data-stack="svc"]{view-timeline:--svc block;view-timeline-inset:64px 0px}
   [data-stack="chk"]{view-timeline:--chk block;view-timeline-inset:64px 0px}
@@ -72,6 +118,7 @@ img{display:block}
   @keyframes barFill{from{transform:scaleX(0)}to{transform:scaleX(1)}}
   [data-steps-cta]{animation-name:ctaIn;animation-timeline:--steps;animation-range:contain 85.1% contain 95.7%;animation-timing-function:cubic-bezier(.33,1,.68,1)}
   @keyframes ctaIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+}
 }
 </style>
 </helmet>
@@ -129,8 +176,8 @@ img{display:block}
   </div>
 </section>
 
-<section id="servicios" data-screen-label="Servicios" data-stack="svc" style="position: relative; height: calc(100svh + 128svh); overflow-x: clip; background: var(--superficie);">
-  <div style="position: sticky; top: 64px; height: calc(100svh - 64px); padding: var(--espacio-5) var(--espacio-3) 96px; display: flex; flex-direction: column; gap: var(--espacio-4); max-width: 1120px; margin: 0 auto;">
+<section id="servicios" data-screen-label="Servicios" data-stack="svc" class="stk stk-svc" style="background: var(--superficie);">
+  <div class="stk-pin" style="display: flex; flex-direction: column; gap: var(--espacio-4); max-width: 1120px; margin: 0 auto;">
     <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: var(--espacio-3);">
       <div style="display: flex; flex-direction: column; gap: var(--espacio-1);">
         <span style="font: var(--tipo-boton); font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--azul);">Servicios</span>
@@ -138,10 +185,10 @@ img{display:block}
       </div>
       <span data-svc-count="" style="font: var(--tipo-boton); color: var(--apagado); font-variant-numeric: tabular-nums;">01 / 05</span>
     </div>
-    <div style="position: relative; flex: 1; min-height: 0;">
+    <div class="svc-track" data-svc-track="">
       <sc-for list="{{ servicios }}" as="s" hint-placeholder-count="5">
-        <article data-svc-card="{{ $index }}" style="position: absolute; inset: 0; background: var(--fondo); border-radius: var(--radio-md); box-shadow: var(--sombra-md); overflow: hidden; display: flex; flex-direction: column; transform-origin: 50% 0; will-change: transform;">
-          <div style="flex: 1; min-height: 0; position: relative; background: var(--linea);">
+        <article data-svc-card="{{ $index }}" class="svc-card" style="background: var(--fondo); border-radius: var(--radio-md); box-shadow: var(--sombra-md); overflow: hidden; display: flex; flex-direction: column; transform-origin: 50% 0;">
+          <div class="svc-media" style="position: relative; background: var(--linea);">
             <img src="{{ s.img }}" alt="{{ s.titulo }}" decoding="async" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: {{ s.pos }};">
           </div>
           <div data-svc-shade="" style="position: absolute; inset: 0; background: #000; opacity: 0; pointer-events: none; will-change: opacity;"></div>
@@ -153,11 +200,16 @@ img{display:block}
         </article>
       </sc-for>
     </div>
+    <div class="svc-dots" aria-label="Servicios">
+      <sc-for list="{{ servicios }}" as="d" hint-placeholder-count="5">
+        <button type="button" data-svc-dot="{{ $index }}" aria-label="Ver servicio {{ d.num }}" onClick="{{ goSvc }}"></button>
+      </sc-for>
+    </div>
   </div>
 </section>
 
-<section id="confianza" data-screen-label="Por qué confiar" data-stack="chk" style="position: relative; height: calc(100svh + 100svh); overflow-x: clip; background: var(--fondo);">
-  <div style="position: sticky; top: 64px; height: calc(100svh - 64px); padding: var(--espacio-5) var(--espacio-3) 96px; display: flex; flex-direction: column; justify-content: center; gap: var(--espacio-4); max-width: 720px; margin: 0 auto;">
+<section id="confianza" data-screen-label="Por qué confiar" data-stack="chk" class="stk stk-chk" style="background: var(--fondo);">
+  <div class="stk-pin" style="display: flex; flex-direction: column; justify-content: center; gap: var(--espacio-4); max-width: 720px; margin: 0 auto;">
     <div style="display: flex; flex-direction: column; gap: var(--espacio-1);">
       <span style="font: var(--tipo-boton); font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--azul);">Por qué confiar en OSW</span>
       <h2 style="font: var(--tipo-titulo-2); margin: 0; text-wrap: balance;">Trabajo a la antigua: bien hecho y sin sorpresas</h2>
@@ -175,18 +227,18 @@ img{display:block}
   </div>
 </section>
 
-<section id="cotizar" data-screen-label="Cómo cotizar" data-stack="steps" style="position: relative; height: calc(100svh + 130svh); overflow-x: clip; background: var(--marino); color: var(--sobre-color);">
-  <div style="position: sticky; top: 64px; height: calc(100svh - 64px); padding: var(--espacio-5) var(--espacio-3) 96px; display: flex; flex-direction: column; justify-content: center; gap: var(--espacio-4); max-width: 720px; margin: 0 auto;">
+<section id="cotizar" data-screen-label="Cómo cotizar" data-stack="steps" class="stk stk-steps" style="background: var(--marino); color: var(--sobre-color);">
+  <div class="stk-pin" style="display: flex; flex-direction: column; justify-content: center; gap: var(--espacio-4); max-width: 720px; margin: 0 auto;">
     <div style="display: flex; flex-direction: column; gap: var(--espacio-1);">
       <span style="font: var(--tipo-boton); font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase;">Cómo cotizar</span>
       <h2 style="font: var(--tipo-titulo-2); margin: 0;">Cuatro pasos, sin vueltas</h2>
     </div>
-    <div style="height: 4px; background: rgba(255,255,255,0.2); border-radius: var(--radio-pill); overflow: hidden;">
+    <div class="steps-track" style="height: 4px; background: rgba(255,255,255,0.2); border-radius: var(--radio-pill); overflow: hidden;">
       <div data-steps-bar="" style="height: 100%; width: 100%; transform: scaleX(0); transform-origin: 0 50%; will-change: transform; background: var(--sobre-color);"></div>
     </div>
     <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column;">
       <sc-for list="{{ pasos }}" as="p" hint-placeholder-count="4">
-        <li data-step="{{ $index }}" style="display: grid; grid-template-columns: 40px 1fr; column-gap: var(--espacio-3); padding: var(--espacio-2) 0; opacity: 0.45; transition: opacity .25s;">
+        <li data-step="{{ $index }}" class="step" style="display: grid; grid-template-columns: 40px 1fr; column-gap: var(--espacio-3); padding: var(--espacio-2) 0; transition: opacity .25s;">
           <span data-step-dot="" style="width: 40px; height: 40px; border-radius: var(--radio-pill); border: 2px solid var(--sobre-color); display: flex; align-items: center; justify-content: center; font: var(--tipo-boton); transition: background-color .25s, color .25s;">{{ p.n }}</span>
           <div style="display: flex; flex-direction: column; justify-content: center; min-height: 40px;">
             <h3 style="font: var(--tipo-titulo-3); font-size: 19px; margin: 0;">{{ p.titulo }}</h3>
@@ -195,7 +247,7 @@ img{display:block}
         </li>
       </sc-for>
     </ol>
-    <div data-steps-cta="" style="display: flex; flex-wrap: wrap; gap: var(--espacio-3); opacity: 0; transform: translateY(16px); pointer-events: none;">
+    <div data-steps-cta="" class="steps-cta" style="display: flex; flex-wrap: wrap; gap: var(--espacio-3);">
       <a href="{{ waLink }}" target="_blank" rel="noopener" style="display: flex; align-items: center; justify-content: center; flex: 1 1 200px; font: var(--tipo-boton); letter-spacing: var(--tracking-boton); text-transform: uppercase; color: var(--sobre-color); background: var(--whatsapp); border-radius: var(--radio-sm); padding: var(--espacio-3) var(--espacio-4); text-decoration: none; transition: transform .5s cubic-bezier(.3,.7,.3,1), background-color .2s;" class="fx fx-x">Empezar por WhatsApp</a>
       <a href="tel:+50241686982" style="display: flex; align-items: center; justify-content: center; flex: 1 1 200px; font: var(--tipo-boton); letter-spacing: var(--tracking-boton); text-transform: uppercase; color: var(--marino); background: var(--sobre-color); border-radius: var(--radio-sm); padding: var(--espacio-3) var(--espacio-4); text-decoration: none; transition: transform .5s cubic-bezier(.3,.7,.3,1), background-color .2s, color .2s;" class="fx fx-x">Llamar ahora</a>
     </div>
@@ -280,8 +332,12 @@ class Component extends DCLogic {
     this.sda = !!(window.CSS && CSS.supports('animation-timeline: view()'));
     this.onScroll = () => this.tick();
     this.onResize = () => { this.stickyTop = null; this.tick(); };
+    // Móvil (mismo corte que el CSS): sin secciones fijadas ni animaciones continuas
+    this.mq = window.matchMedia('(max-width: 767px)');
+    this.onMq = () => { this.cur = null; this.update(true); };
     document.addEventListener('scroll', this.onScroll, { passive: true, capture: true });
     window.addEventListener('resize', this.onResize);
+    if (this.mq.addEventListener) this.mq.addEventListener('change', this.onMq);
     this.setupReveal();
     this.update(true);
     setTimeout(() => this.update(true), 300);
@@ -290,6 +346,7 @@ class Component extends DCLogic {
   componentWillUnmount() {
     document.removeEventListener('scroll', this.onScroll, { capture: true });
     window.removeEventListener('resize', this.onResize);
+    if (this.mq && this.mq.removeEventListener) this.mq.removeEventListener('change', this.onMq);
     if (this.raf) cancelAnimationFrame(this.raf);
     if (this.baRaf) cancelAnimationFrame(this.baRaf);
     if (this.io) this.io.disconnect();
@@ -300,6 +357,60 @@ class Component extends DCLogic {
   tick() {
     if (this.raf) return;
     this.raf = requestAnimationFrame(t => { this.raf = null; this.update(false, t); });
+  }
+
+  // Móvil: el carrusel de servicios solo actualiza contador y puntos. Todo lo demás queda en
+  // su estado final; se limpian los estilos continuos por si se venía del diseño de escritorio.
+  updateMobile(svc, chk, st) {
+    const put = (el, k, v) => { if (el && el.style[k] !== v) el.style[k] = v; };
+    if (svc) {
+      const track = svc.querySelector('[data-svc-track]');
+      const cards = svc.querySelectorAll('[data-svc-card]');
+      const N = cards.length;
+      let idx = 0;
+      if (track && N > 1) {
+        const step = cards[1].offsetLeft - cards[0].offsetLeft;
+        idx = step > 0 ? Math.round(track.scrollLeft / step) : 0;
+        // La última tarjeta no llega a alinearse al inicio: al tope del carrusel, es la activa
+        if (track.scrollLeft + track.clientWidth >= track.scrollWidth - 2) idx = N - 1;
+        idx = Math.max(0, Math.min(N - 1, idx));
+      }
+      cards.forEach(c => {
+        put(c, 'transform', '');
+        put(c, 'zIndex', '');
+        put(c.querySelector('[data-svc-shade]'), 'opacity', '0');
+      });
+      const cnt = svc.querySelector('[data-svc-count]');
+      const txt = `0${idx + 1} / 0${N}`;
+      if (cnt && cnt.textContent !== txt) cnt.textContent = txt;
+      svc.querySelectorAll('[data-svc-dot]').forEach((d, i) => {
+        const v = String(i === idx);
+        if (d.getAttribute('aria-current') !== v) d.setAttribute('aria-current', v);
+      });
+    }
+    if (chk) chk.querySelectorAll('[data-chk]').forEach(el => {
+      put(el, 'opacity', '');
+      put(el, 'transform', '');
+      const box = el.querySelector('[data-chk-box]');
+      put(box, 'background', 'var(--azul)');
+      put(box, 'borderColor', 'var(--azul)');
+    });
+    if (st) {
+      st.querySelectorAll('[data-step]').forEach(r => {
+        put(r, 'opacity', '');
+        const dot = r.querySelector('[data-step-dot]');
+        put(dot, 'background', 'var(--sobre-color)');
+        put(dot, 'color', 'var(--marino)');
+        const body = r.querySelector('[data-step-body]');
+        put(body, 'maxHeight', 'none');
+        put(body, 'marginTop', '6px');
+      });
+      put(st.querySelector('[data-steps-bar]'), 'transform', '');
+      const cta = st.querySelector('[data-steps-cta]');
+      put(cta, 'opacity', '');
+      put(cta, 'transform', '');
+      put(cta, 'pointerEvents', '');
+    }
   }
 
   setupReveal() {
@@ -330,6 +441,7 @@ class Component extends DCLogic {
     const svc = root.querySelector('[data-stack="svc"]');
     const chk = root.querySelector('[data-stack="chk"]');
     const st = root.querySelector('[data-stack="steps"]');
+    if (this.mq && this.mq.matches) { this.updateMobile(svc, chk, st); return; }
 
     // 1) Lecturas: todas antes de escribir estilos, para no forzar un recálculo de layout por sección.
     // Progreso del tramo en que el bloque sticky está fijo, medido con su altura real (no con
@@ -451,6 +563,12 @@ class Component extends DCLogic {
       baDown: e => { this.dragging = true; try { e.currentTarget.setPointerCapture(e.pointerId); } catch (_) {} this.setFromEvent(e); },
       baMove: e => { if (this.dragging) this.setFromEvent(e); },
       baUp: () => { this.dragging = false; },
+      goSvc: e => {
+        const i = Number(e.currentTarget.getAttribute('data-svc-dot'));
+        const track = this.rootRef.current && this.rootRef.current.querySelector('[data-svc-track]');
+        const cards = track ? track.querySelectorAll('[data-svc-card]') : [];
+        if (cards[i]) track.scrollTo({ left: cards[i].offsetLeft - cards[0].offsetLeft, behavior: 'smooth' });
+      },
       waLink: 'https://wa.me/50241686982?text=' + encodeURIComponent(msg),
       barraMovil: this.props.barraMovil ?? true,
       servicios: [
