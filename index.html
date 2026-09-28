@@ -145,10 +145,10 @@ img{display:block}
   <div style="position: absolute; inset: 0; background: rgba(11,42,74,0.78);"></div>
   <div style="position: relative; width: 100%; max-width: 1120px; margin: 0 auto; padding: var(--espacio-6) var(--espacio-3) calc(var(--espacio-7) + 56px); display: flex; flex-direction: column; gap: var(--espacio-4); color: var(--sobre-color);">
     <span data-reveal="" style="font: var(--tipo-boton); font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase;">Enderezado y pintura · Zona 11</span>
-    <h1 data-reveal="" data-delay="60" style="font: var(--tipo-titulo-1); font-size: clamp(36px, 7vw, 56px); letter-spacing: var(--tracking-titulo-1); margin: 0; max-width: 14ch; text-wrap: balance;">Su carro, como si el golpe nunca hubiera pasado.</h1>
-    <p data-reveal="" data-delay="120" style="font: var(--tipo-cuerpo-grande); margin: 0; max-width: 36ch; text-wrap: pretty;">Taller de colisión en la Ciudad de Guatemala. Envíe fotos del daño por WhatsApp y reciba su presupuesto sin salir de casa.</p>
+    <h1 data-reveal="" data-delay="60" style="font: var(--tipo-titulo-1); font-size: clamp(36px, 7vw, 56px); letter-spacing: var(--tracking-titulo-1); margin: 0; max-width: 14ch; text-wrap: balance;">Que nadie note que su carro estuvo chocado.</h1>
+    <p data-reveal="" data-delay="120" style="font: var(--tipo-cuerpo-grande); margin: 0; max-width: 36ch; text-wrap: pretty;">Mándenos fotos del golpe por WhatsApp y le decimos cuánto cuesta y cuánto tarda, antes de que usted mueva el carro.</p>
     <div data-reveal="" data-delay="180" style="display: flex; flex-wrap: wrap; gap: var(--espacio-3); margin-top: var(--espacio-2);">
-      <a href="{{ waLink }}" target="_blank" rel="noopener" style="display: flex; align-items: center; justify-content: center; gap: var(--espacio-2); flex: 1 1 200px; font: var(--tipo-boton); letter-spacing: var(--tracking-boton); text-transform: uppercase; color: var(--sobre-color); background: var(--whatsapp); border-radius: var(--radio-sm); padding: var(--espacio-3) var(--espacio-4); text-decoration: none; transition: transform .5s cubic-bezier(.3,.7,.3,1), background-color .2s;" class="fx fx-x">Cotizar por WhatsApp</a>
+      <a href="{{ waLink }}" target="_blank" rel="noopener" style="display: flex; align-items: center; justify-content: center; gap: var(--espacio-2); flex: 1 1 200px; font: var(--tipo-boton); letter-spacing: var(--tracking-boton); text-transform: uppercase; color: var(--sobre-color); background: var(--whatsapp); border-radius: var(--radio-sm); padding: var(--espacio-3) var(--espacio-4); text-decoration: none; transition: transform .5s cubic-bezier(.3,.7,.3,1), background-color .2s;" class="fx fx-x">Mandar fotos por WhatsApp</a>
       <a href="tel:+50241686982" style="display: flex; align-items: center; justify-content: center; flex: 1 1 200px; font: var(--tipo-boton); letter-spacing: var(--tracking-boton); text-transform: uppercase; color: var(--sobre-color); background: transparent; border: 2px solid var(--sobre-color); border-radius: var(--radio-sm); padding: 14px var(--espacio-4); text-decoration: none; transition: transform .5s cubic-bezier(.3,.7,.3,1), background-color .2s, border-color .2s;" class="fx fx-x">Llamar +502 4168 6982</a>
     </div>
     <span data-reveal="" data-delay="240" style="font: var(--tipo-pequeno);">14 Avenida 4-24, Zona 11, Ciudad de Guatemala</span>
@@ -160,7 +160,7 @@ img{display:block}
     <div data-reveal="" style="display: flex; flex-direction: column; gap: var(--espacio-2);">
       <span style="font: var(--tipo-boton); font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--azul);">Antes y después</span>
       <h2 style="font: var(--tipo-titulo-2); margin: 0; text-wrap: balance;">Del golpe al acabado de fábrica</h2>
-      <p style="margin: 0; color: var(--apagado); max-width: 52ch;">Deslice para comparar. Enderezamos la lámina, igualamos el color y devolvemos el brillo.</p>
+      <p style="margin: 0; color: var(--apagado); max-width: 52ch;">Deslice la línea: la misma puerta, antes y después de pasar por el taller.</p>
     </div>
     <div data-reveal="" data-delay="80" ref="{{ baRef }}" onPointerDown="{{ baDown }}" onPointerMove="{{ baMove }}" onPointerUp="{{ baUp }}" onPointerCancel="{{ baUp }}" style="position: relative; aspect-ratio: 3 / 2; border-radius: var(--radio-md); overflow: hidden; box-shadow: var(--sombra-md); cursor: ew-resize; touch-action: pan-y; user-select: none; background: var(--superficie);">
       <img src="img/despues.webp" alt="Puerta reparada y pintada" draggable="false" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none;">
@@ -181,7 +181,7 @@ img{display:block}
     <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: var(--espacio-3);">
       <div style="display: flex; flex-direction: column; gap: var(--espacio-1);">
         <span style="font: var(--tipo-boton); font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--azul);">Servicios</span>
-        <h2 style="font: var(--tipo-titulo-2); margin: 0;">Lo que hacemos</h2>
+        <h2 style="font: var(--tipo-titulo-2); margin: 0;">Qué le arreglamos</h2>
       </div>
       <span data-svc-count="" style="font: var(--tipo-boton); color: var(--apagado); font-variant-numeric: tabular-nums;">01 / 05</span>
     </div>
@@ -572,24 +572,24 @@ class Component extends DCLogic {
       waLink: 'https://wa.me/50241686982?text=' + encodeURIComponent(msg),
       barraMovil: this.props.barraMovil ?? true,
       servicios: [
-        { num: '01', img: 'img/proceso.webp', pos: '40% center', titulo: 'Enderezado de carrocería', texto: 'Recuperamos la forma original de puertas, guardafangos, capó y paneles después de un golpe.' },
-        { num: '02', img: 'img/herramientas.webp', pos: '80% center', titulo: 'Pintura completa y por pieza', texto: 'Pintamos en cabina para un acabado parejo, sin polvo y con brillo duradero.' },
-        { num: '03', img: 'img/despues.webp', pos: '45% center', titulo: 'Igualación de color', texto: 'Igualamos el tono de fábrica para que la reparación no se note junto al resto del carro.' },
-        { num: '04', img: 'img/antes.webp', pos: '35% center', titulo: 'Golpes y rayones', texto: 'Desde un rayón superficial hasta abolladuras profundas en lámina y bumper.' },
-        { num: '05', img: 'img/taller.webp', pos: '55% center', titulo: 'Pulido y abrillantado', texto: 'Retiramos marcas finas y devolvemos el brillo a la pintura.' }
+        { num: '01', img: 'img/proceso.webp', pos: '40% center', titulo: 'Enderezado de carrocería', texto: 'Puertas hundidas, guardafangos doblados, capó levantado. Devolvemos la lámina a su forma para que todo vuelva a cerrar parejo.' },
+        { num: '02', img: 'img/herramientas.webp', pos: '80% center', titulo: 'Pintura por pieza o completa', texto: 'Pintamos en cabina, no al aire libre: sin polvo, sin chorreados y con brillo que dura.' },
+        { num: '03', img: 'img/despues.webp', pos: '45% center', titulo: 'Igualación de color', texto: 'Sacamos el tono exacto de su carro, aunque el sol ya lo haya gastado, para que la pieza reparada no se note.' },
+        { num: '04', img: 'img/antes.webp', pos: '35% center', titulo: 'Golpes y rayones', texto: 'Desde el rayón del parqueo hasta el bumper hundido. Lo que le da pena ver cada mañana, lo dejamos como nuevo.' },
+        { num: '05', img: 'img/taller.webp', pos: '55% center', titulo: 'Pulido y abrillantado', texto: 'Quitamos rayas finas y manchas, y le devolvemos el brillo a la pintura opaca.' }
       ],
       garantias: [
-        'Presupuesto claro antes de empezar',
-        'Le enviamos fotos del avance',
-        'Pintura aplicada en cabina',
+        'Sabe el precio antes de que toquemos el carro',
+        'Le mandamos fotos del avance por WhatsApp',
+        'Pintura en cabina, no al aire libre',
         'Materiales de marcas reconocidas',
-        'Entrega en la fecha acordada'
+        'Se lo entregamos el día que le dijimos'
       ],
       pasos: [
-        { n: '1', titulo: 'Escríbanos por WhatsApp', texto: 'Cuéntenos qué le pasó a su carro: marca, modelo y dónde está el daño.' },
-        { n: '2', titulo: 'Envíe fotos del daño', texto: 'Dos o tres fotos, de cerca y de lejos, bastan para una primera estimación.' },
-        { n: '3', titulo: 'Reciba su presupuesto', texto: 'Le enviamos el costo y el tiempo estimado antes de tocar su carro.' },
-        { n: '4', titulo: 'Traiga su carro a Zona 11', texto: '14 Avenida 4-24. Le avisamos con fotos cuando esté listo para recoger.' }
+        { n: '1', titulo: 'Escríbanos por WhatsApp', texto: 'Díganos marca, modelo y año, y dónde está el golpe.' },
+        { n: '2', titulo: 'Envíe fotos del daño', texto: 'Dos o tres fotos, una de cerca y una de lejos. Con eso le damos un primer precio.' },
+        { n: '3', titulo: 'Reciba precio y tiempo', texto: 'Le decimos cuánto cuesta y cuántos días tarda. Usted decide sin compromiso.' },
+        { n: '4', titulo: 'Traiga su carro a Zona 11', texto: '14 Avenida 4-24. Le avisamos con fotos cuando esté listo para recogerlo.' }
       ]
     };
   }
