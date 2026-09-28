@@ -141,7 +141,7 @@ img{display:block}
 </header>
 
 <section id="inicio" data-screen-label="Hero" style="position: relative; min-height: calc(100svh - 64px); display: flex; align-items: flex-end; overflow: hidden; background: var(--marino);">
-  <img src="img/taller.webp" fetchpriority="high" alt="Interior del taller OSW con un carro en proceso de pintura" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 55% center;">
+  <img src="img/inicio.webp" fetchpriority="high" alt="Interior del taller OSW con un carro en proceso de pintura" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 70% center;">
   <div style="position: absolute; inset: 0; background: rgba(11,42,74,0.78);"></div>
   <div style="position: relative; width: 100%; max-width: 1120px; margin: 0 auto; padding: var(--espacio-6) var(--espacio-3) calc(var(--espacio-7) + 56px); display: flex; flex-direction: column; gap: var(--espacio-4); color: var(--sobre-color);">
     <span data-reveal="" style="font: var(--tipo-boton); font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase;">Enderezado y pintura · Zona 11</span>
@@ -572,11 +572,11 @@ class Component extends DCLogic {
       waLink: 'https://wa.me/50241686982?text=' + encodeURIComponent(msg),
       barraMovil: this.props.barraMovil ?? true,
       servicios: [
-        { num: '01', img: 'img/proceso.webp', pos: '40% center', titulo: 'Enderezado de carrocería', texto: 'Puertas hundidas, guardafangos doblados, capó levantado. Devolvemos la lámina a su forma para que todo vuelva a cerrar parejo.' },
-        { num: '02', img: 'img/herramientas.webp', pos: '80% center', titulo: 'Pintura por pieza o completa', texto: 'Pintamos en cabina, no al aire libre: sin polvo, sin chorreados y con brillo que dura.' },
-        { num: '03', img: 'img/despues.webp', pos: '45% center', titulo: 'Igualación de color', texto: 'Sacamos el tono exacto de su carro, aunque el sol ya lo haya gastado, para que la pieza reparada no se note.' },
-        { num: '04', img: 'img/antes.webp', pos: '35% center', titulo: 'Golpes y rayones', texto: 'Desde el rayón del parqueo hasta el bumper hundido. Lo que le da pena ver cada mañana, lo dejamos como nuevo.' },
-        { num: '05', img: 'img/taller.webp', pos: '55% center', titulo: 'Pulido y abrillantado', texto: 'Quitamos rayas finas y manchas, y le devolvemos el brillo a la pintura opaca.' }
+        { num: '01', img: 'img/enderezado.webp', pos: '50% 45%', titulo: 'Enderezado de carrocería', texto: 'Puertas hundidas, guardafangos doblados, capó levantado. Devolvemos la lámina a su forma para que todo vuelva a cerrar parejo.' },
+        { num: '02', img: 'img/pintura.webp', pos: '45% 40%', titulo: 'Pintura por pieza o completa', texto: 'Pintamos en cabina, no al aire libre: sin polvo, sin chorreados y con brillo que dura.' },
+        { num: '03', img: 'img/color.webp', pos: '40% 55%', titulo: 'Igualación de color', texto: 'Sacamos el tono exacto de su carro, aunque el sol ya lo haya gastado, para que la pieza reparada no se note.' },
+        { num: '04', img: 'img/rayones.webp', pos: '45% 65%', titulo: 'Golpes y rayones', texto: 'Desde el rayón del parqueo hasta el bumper hundido. Lo que le da pena ver cada mañana, lo dejamos como nuevo.' },
+        { num: '05', img: 'img/pulido.webp', pos: '45% 50%', titulo: 'Pulido y abrillantado', texto: 'Quitamos rayas finas y manchas, y le devolvemos el brillo a la pintura opaca.' }
       ],
       garantias: [
         'Sabe el precio antes de que toquemos el carro',
